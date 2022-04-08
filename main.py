@@ -24,9 +24,6 @@ def create_finit_difference(y_arr):
     delta_fn_arr2 = []
     delta_fn_arr3 = []
 
-    for pair in dots:
-        y_arr.append(pair[1])
-
     # [16, 23, 33]
 
     # ∆f_0 = 16
@@ -47,52 +44,64 @@ def create_finit_difference(y_arr):
 
     # [3]
 
-    # ∆3f_0
+    # ∆3f_0 = 3
     for i in range(len(delta_fn_arr2) - 1):
         delta_fn3 = delta_fn_arr2[i + 1] - delta_fn_arr2[i]
         delta_fn_arr3.append(delta_fn3)
 
+    differences.append(y_arr)
     differences.append(delta_fn_arr1)
     differences.append(delta_fn_arr2)
     differences.append(delta_fn_arr3)
 
+    # print(delta_fn_arr1)
+    # print(delta_fn_arr2)
+    # print(delta_fn_arr3)
+
+    #print(f"таблица {differences}")
     return differences
 
 
-def sum_factorial(x, k):
-    if x < 1:
-        return 1
-    result = 1
-    for i in range(1, k + 1):
-        result *= x + i
-    return result
-
-
 def factorial(_n):
-    if _n < 1:
+    if _n == 0 or _n == 1:
         return 1
 
-    result = 1
-    for i in range(1, _n + 1):
-        result *= i
+    res = 1
+    for i in range(_n):
+        res *= i + 1
 
-    return result
+    return res
 
 
-def second_nyuton_formula(x_arr, xk, diffs):
-    h = x_arr[1] - x_arr[0]
+def sum_factorial(x, k):
+    res = x
+    if x == 0:
+        return 1
+    for i in range(k):
+        res *= x + i + 1
+
+    return res
+
+
+def second_nyuton_formula(x_arr, xk, y_arr):
+    diffs = create_finit_difference(y_arr)
+    print(diffs)
+    h = abs(x_arr[1] - x_arr[0])
+    #print(h)
     t = (xk - x_arr[-1]) / h
+    #print(x_arr[-1])
 
     p = diffs[0][-1]
     for i in range(len(diffs) - 1):
-        p += (sum_factorial(t, i) * diffs[i + 1][-1]) / factorial(i)
+        p += (sum_factorial(t, i) * diffs[i + 1][-1]) / factorial(i + 1)
     return p
 
 
-dots = [[4, 11], [6, 27], [8, 50], [10, 83]]
 x_dots = [4, 6, 8, 10]
-y_dots = [11, 27, 58, 80]
-x_k = 20
+y_dots = [11, 27, 50, 83]
+x_k = 10
 
-result = second_nyuton_formula(x_dots, x_k, create_finit_difference(y_dots))
+result = second_nyuton_formula(x_dots, x_k, y_dots)
 print(f"результат: {result}")
+
+#print(create_finit_difference(y_dots))
