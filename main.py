@@ -18,30 +18,22 @@ import sympy
 # 4) Для точки x_k, близкой к концу таблицы: вторая формула Ньютона
 
 # конечные разности
-def create_finit_difference(arr):
-    x_k = 20
-
-    fn_arr = []
-    x_arr = []
+def create_finit_difference(y_arr):
+    differences = []
     delta_fn_arr1 = []
     delta_fn_arr2 = []
     delta_fn_arr3 = []
 
     for pair in dots:
-        fn_arr.append(pair[1])
-
-    for pair in dots:
-        x_arr.append(pair[0])
-
-    h = abs(x_arr[1] - x_arr[0])
+        y_arr.append(pair[1])
 
     # [16, 23, 33]
 
     # ∆f_0 = 16
     # ∆f_1 = 23
     # ∆f_2 = 33
-    for i in range(len(fn_arr) - 1):
-        delta_fn1 = fn_arr[i + 1] - fn_arr[i]
+    for i in range(len(y_arr) - 1):
+        delta_fn1 = y_arr[i + 1] - y_arr[i]
         delta_fn_arr1.append(delta_fn1)
 
 
@@ -60,16 +52,20 @@ def create_finit_difference(arr):
         delta_fn3 = delta_fn_arr2[i + 1] - delta_fn_arr2[i]
         delta_fn_arr3.append(delta_fn3)
 
-    n = 0
-    for i in range(len(fn_arr) - 1):
-        for j in range(len(delta_fn_arr1) - 1):
-            for k in range(len(delta_fn_arr2) - 1):
-                for m in range(len(delta_fn_arr3) - 1):
-                    for _x in x_arr:
-                        t = (x_k - _x) / h
-                        fn_arr[i] + t * delta_fn_arr1[i - 1] / factorial(4) 
+    differences.append(delta_fn_arr1)
+    differences.append(delta_fn_arr2)
+    differences.append(delta_fn_arr3)
+
+    return differences
 
 
+def sum_factorial(x, k):
+    if x < 1:
+        return 1
+    result = 1
+    for i in range(1, k + 1):
+        result *= x + i
+    return result
 
 
 def factorial(_n):
@@ -83,9 +79,20 @@ def factorial(_n):
     return result
 
 
-def second_nyuton_formula():
-    pass
+def second_nyuton_formula(x_arr, xk, diffs):
+    h = x_arr[1] - x_arr[0]
+    t = (xk - x_arr[-1]) / h
+
+    p = diffs[0][-1]
+    for i in range(len(diffs) - 1):
+        p += (sum_factorial(t, i) * diffs[i + 1][-1]) / factorial(i)
+    return p
 
 
 dots = [[4, 11], [6, 27], [8, 50], [10, 83]]
-#print(create_finit_difference(dots))
+x_dots = [4, 6, 8, 10]
+y_dots = [11, 27, 58, 80]
+x_k = 20
+
+result = second_nyuton_formula(x_dots, x_k, create_finit_difference(y_dots))
+print(f"результат: {result}")
